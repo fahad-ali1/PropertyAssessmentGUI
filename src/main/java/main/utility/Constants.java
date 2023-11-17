@@ -3,6 +3,8 @@ package main.utility;
 /**
  * This class contains constants representing the indices of various fields in the provided CSV file format.
  * These constants are used for accessing specific cells.
+ * <p>
+ * Author: Fahad Ali
  */
 public class Constants {
     public static final int ACCOUNT_NUM_INDEX = 0;

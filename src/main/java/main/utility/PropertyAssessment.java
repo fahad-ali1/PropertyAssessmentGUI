@@ -4,8 +4,10 @@ import java.text.NumberFormat;
 import java.util.Objects;
 
 /**
- * The PropertyAssessment class represents a property assessment, contains information
+ * PropertyAssessment represents a property assessment, contains information
  * such as building details, neighborhood information, location, and assessment class.
+ * <p>
+ * Author: Fahad Ali
  */
 public class PropertyAssessment implements Comparable<PropertyAssessment> {
     NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();

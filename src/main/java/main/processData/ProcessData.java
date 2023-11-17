@@ -1,7 +1,7 @@
 package main.processData;
 
-import main.PropertyAssessment;
-import main.PropertyAssessments;
+import main.utility.PropertyAssessment;
+import main.utility.PropertyAssessments;
 import main.utility.*;
 
 import java.io.BufferedReader;
@@ -11,17 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The ProcessData class is responsible for processing a CSV file containing property assessment data.
+ * It provides methods to parse and manipulate the data, apply filters, and retrieve information about properties.
+ * It can also retrieve information from any input that follows the defined formatting of the CSV.
+ * <p>
+ * Author: Fahad Ali
+ */
 public class ProcessData {
     private final String csvFileName;
     private final PropertyAssessments propertyAssessments;
 
     /**
-     * Constructor for the ProcessFile
-     * Initializes the private instance variables with the provided values.
-     * This class is one of the main driving classes for the program. It takes a CSV file and processes it line by line.
-     * It has methods to handle an errors, filtering, and retrieve information.
+     * Constructor for the ProcessFile class
      *
-     * @param csvFileName      a CSV file with the proper formatting
+     * @param csvFileName a CSV file with the proper formatting
      */
     public ProcessData(String csvFileName) {
         this.csvFileName = csvFileName;
@@ -29,33 +33,42 @@ public class ProcessData {
     }
 
     /**
-     * Constructor for ProcessFile without a filename.
-     * Initializes the private instance variables without a filename.
+     * Constructor for ProcessFile class without a filename.
+     * Initializes without a filename.
      */
     public ProcessData() {
         this.csvFileName = null;
         this.propertyAssessments = new PropertyAssessments(new ArrayList<>());
     }
 
-    public void processFile(String AccountNumber, String neighborhoodToMatch, String assessmentClassToMatch) {
-        if (propertyAssessments.size() > 0) { // if there is already information in the list, then we can filter it
-            filters(AccountNumber, neighborhoodToMatch, assessmentClassToMatch);
-        } else { // means there is no information in the list, so we need to add some property objects
+    /**
+     * Process the CSV file, parsing each line and creating PropertyAssessment objects.
+     * Skips the first line in the CSV as it contains titles.
+     */
+    public void processFile() {
+        try {
+            assert csvFileName != null;
             try (BufferedReader fileReader = new BufferedReader(new FileReader(csvFileName))) {
                 fileReader.readLine(); // Skip the first line in CSV as they are titles
                 String line;
 
-                while ((line = fileReader.readLine()) != null) { // read till end of file
+                while ((line = fileReader.readLine()) != null) { // read until end of file
                     String[] cell = line.split(",", Constants.NUM_COLUMNS);
                     PropertyAssessment property = getPropertyAssessment(cell);
                     addAssessment(property); // add parsed property to PropertyAssessments object
                 }
-            } catch (IOException e) {
-                handleFileOpenError(); // handle error
             }
+        } catch (IOException e) {
+            handleFileOpenError(); // handle error
         }
     }
 
+    /**
+     * Parses a CSV row and creates a PropertyAssessment object.
+     *
+     * @param cell an array of strings representing the CSV row
+     * @return a PropertyAssessment object
+     */
     public PropertyAssessment getPropertyAssessment(String[] cell) {
         // this method creates a single property object by properly parsing and creating "sub" objects
         int accountNum = parseInt(cell[Constants.ACCOUNT_NUM_INDEX]);
@@ -82,6 +95,12 @@ public class ProcessData {
         return new PropertyAssessment(buildingInfo, neighborhoodInfo, location, assessmentClass);
     }
 
+    /**
+     * Parse a string into an integer and handle errors.
+     *
+     * @param value a string to be parsed
+     * @return the parsed integer
+     */
     private static int parseInt(String value) {
         // this method turns the string into an int and handles errors
         try {
@@ -91,6 +110,12 @@ public class ProcessData {
         }
     }
 
+    /**
+     * Parse a string into a double and handle errors.
+     *
+     * @param value a string to be parsed
+     * @return the parsed double
+     */
     private static double parseDouble(String value) {
         // this method turns the string into a double and handles errors
         try {
@@ -100,96 +125,194 @@ public class ProcessData {
         }
     }
 
+    /**
+     * Handle the error when opening a file.
+     */
     private void handleFileOpenError() {
         // this method simplifies error handling for a file
         System.err.println("Error: Can't open file " + csvFileName);
     }
 
+    /**
+     * Add a PropertyAssessment object to the PropertyAssessments list of PropertyAssessment objects.
+     *
+     * @param property the PropertyAssessment to be added
+     */
     private void addAssessment(PropertyAssessment property) {
         // this method will hash and add a property object to the PropertyAssessments instance
         propertyAssessments.hashProperty(property);
         propertyAssessments.addList(property);
     }
 
-    private void filters (String AccountNumber, String neighborhoodToMatch, String assessmentClassToMatch){
-        // this method calls the appropriate method to filter depending on what is inputted
-        if (AccountNumber != null) {
-            System.out.println(handleAccountNumber(AccountNumber));
-        }else if (neighborhoodToMatch != null) {
-            filterByNeighborhood(neighborhoodToMatch, propertyAssessments);
-        }else if (assessmentClassToMatch != null) {
-            filterByAssessment(assessmentClassToMatch, propertyAssessments);
-        }
+    /**
+     * Check if the account number of a PropertyAssessment finds the provided account number.
+     *
+     * @param property   the PropertyAssessment to check
+     * @param accountNum the account number to compare with
+     * @return true if the account number matches or if the provided account number is null. Else, false
+     */
+    private boolean findAccountNum(PropertyAssessment property, String accountNum) {
+        return accountNum == null || String.valueOf(property.getBuildingInfo().getAccountNum()).contains(accountNum);
     }
 
+    /**
+     * Check if the neighborhood of a PropertyAssessment finds the provided neighborhood.
+     *
+     * @param property     the PropertyAssessment to check
+     * @param neighborhood the neighborhood to compare with
+     * @return true if the neighborhood matches or if the provided neighborhood is null. Else, false
+     */
+    private boolean findNeighborhood(PropertyAssessment property, String neighborhood) {
+        return neighborhood == null || property.getNeighborhoodInfo().getNeighborhood().toLowerCase()
+                .contains(neighborhood.toLowerCase());
+    }
+
+    /**
+     * Check if the assessment class of a PropertyAssessment finds the provided assessment class.
+     *
+     * @param property        the PropertyAssessment to check
+     * @param assessmentClass the assessment class to compare with
+     * @return true if the assessment class matches or if the provided assessment class is null.
+     * Else, false
+     */
+    private boolean findAssessmentClass(PropertyAssessment property, String assessmentClass) {
+        return assessmentClass == null ||
+                property.getAssessmentClass().getAssessmentClass1().equalsIgnoreCase(assessmentClass) ||
+                property.getAssessmentClass().getAssessmentClass2().equalsIgnoreCase(assessmentClass) ||
+                property.getAssessmentClass().getAssessmentClass3().equalsIgnoreCase(assessmentClass);
+    }
+
+    /**
+     * Check if the address of a PropertyAssessment finds the provided address.
+     *
+     * @param property the PropertyAssessment to check
+     * @param address  the address to compare with
+     * @return true if the address matches or if the provided address is null. Else, false
+     */
+    private boolean findAddress(PropertyAssessment property, String address) {
+        return address == null ||
+                property.getBuildingInfo().getStreetName().toLowerCase().contains(address.toLowerCase()) ||
+                String.valueOf(property.getBuildingInfo().getHouseNum()).contains(address.toLowerCase()) ||
+                String.valueOf(property.getBuildingInfo().getSuite()).contains(address.toLowerCase());
+    }
+
+    /**
+     * Apply multiple filters to the property assessments based on specified criteria.
+     *
+     * @param accountNum                the account number to filter
+     * @param neighborhood              the neighborhood to filter
+     * @param assessmentClass           the assessment class to filter
+     * @param address                   the address to filter
+     * @param minAssessedValue          the minimum assessed value to filter
+     * @param maxAssessedValue          the maximum assessed value to filter
+     * @param customPropertyAssessments a custom PropertyAssessments object to filter
+     * @return a filtered PropertyAssessments object
+     */
+    public PropertyAssessments filters(String accountNum, String neighborhood, String assessmentClass, String address,
+                                       int minAssessedValue, int maxAssessedValue, PropertyAssessments customPropertyAssessments) {
+
+        PropertyAssessments assessments = (customPropertyAssessments != null) ? customPropertyAssessments : propertyAssessments;
+
+        List<PropertyAssessment> filteredList = assessments.getPropertyAssessmentList()
+                .stream()
+                .filter(propertyAssessment ->
+                        findAccountNum(propertyAssessment, accountNum) &&
+                                findNeighborhood(propertyAssessment, neighborhood) &&
+                                findAssessmentClass(propertyAssessment, assessmentClass) &&
+                                findAddress(propertyAssessment, address) &&
+                                findAssessedRange(propertyAssessment, minAssessedValue, maxAssessedValue))
+                .collect(Collectors.toList());
+
+        return new PropertyAssessments((ArrayList<PropertyAssessment>) filteredList);
+    }
+
+    /**
+     * Check if the assessed value of a PropertyAssessment falls in the range.
+     *
+     * @param property    the PropertyAssessment to check
+     * @param minAssessed the minimum assessed value
+     * @param maxAssessed the maximum assessed value
+     * @return true if the assessed value is within the range. Else, false
+     */
+    private boolean findAssessedRange(PropertyAssessment property, int minAssessed, int maxAssessed) {
+        int assessedValue = property.getNeighborhoodInfo().getAssessedValue();
+        return assessedValue >= minAssessed && assessedValue <= maxAssessed;
+    }
+
+    /**
+     * Retrieve a PropertyAssessment by account number.
+     *
+     * @param accountNumberInput the account number input
+     * @return a PropertyAssessment object
+     */
+    public PropertyAssessment handleAccountNumber(String accountNumberInput) {
+        int accountNumber = Integer.parseInt(accountNumberInput);
+        return propertyAssessments.getPropertyByAccountNum(accountNumber);
+    }
+
+    /**
+     * Filter property assessments by neighborhood.
+     *
+     * @param neighborhood              the neighborhood filter
+     * @param customPropertyAssessments a custom PropertyAssessments object to filter (optional)
+     * @return a filtered PropertyAssessments object
+     */
     public PropertyAssessments filterByNeighborhood(String neighborhood, PropertyAssessments customPropertyAssessments) {
         PropertyAssessments assessments = (customPropertyAssessments != null) ? customPropertyAssessments : propertyAssessments;
 
         List<PropertyAssessment> filteredList = assessments.getPropertyAssessmentList()
                 .stream()
                 .filter(propertyAssessment ->
-                        propertyAssessment.getNeighborhoodInfo().getNeighborhood().equalsIgnoreCase(neighborhood))
+                        findNeighborhood(propertyAssessment, neighborhood))
                 .collect(Collectors.toList()); // use stream to filter by neighborhood and ignore case
 
         return new PropertyAssessments((ArrayList<PropertyAssessment>) filteredList);
     }
 
+    /**
+     * Filter property assessments by assessment class.
+     *
+     * @param assessmentClass           the assessment class filter
+     * @param customPropertyAssessments a custom PropertyAssessments object to filter (optional)
+     * @return a filtered PropertyAssessments object
+     */
     public PropertyAssessments filterByAssessment(String assessmentClass, PropertyAssessments customPropertyAssessments) {
         PropertyAssessments assessments = (customPropertyAssessments != null) ? customPropertyAssessments : propertyAssessments;
 
         List<PropertyAssessment> filteredList = assessments.getPropertyAssessmentList()
                 .stream()
                 .filter(propertyAssessment ->
-                        propertyAssessment.getAssessmentClass().getAssessmentClass1().equalsIgnoreCase(assessmentClass)
-                        || propertyAssessment.getAssessmentClass().getAssessmentClass2().equalsIgnoreCase(assessmentClass)
-                        || propertyAssessment.getAssessmentClass().getAssessmentClass3().equalsIgnoreCase(assessmentClass))
+                        findAssessmentClass(propertyAssessment, assessmentClass))
                 .collect(Collectors.toList()); // use stream to filter by assessment classes and ignore case
 
         return new PropertyAssessments((ArrayList<PropertyAssessment>) filteredList);
     }
 
-//    private void filterStat(List<PropertyAssessment> filteredList){
-//        // this method will take a new list to grab stats on
-//        PropertyAssessments filteredPropertyAssessments =
-//                new PropertyAssessments((ArrayList<PropertyAssessment>) filteredList);
-//        getStat(filteredPropertyAssessments); // call stat method to get stats on the filtered list
-//    }
+    /**
+     * Filter property assessments by address.
+     *
+     * @param address                   the address filter
+     * @param customPropertyAssessments a custom PropertyAssessments object to filter (optional)
+     * @return a filtered PropertyAssessments object
+     */
+    public PropertyAssessments filterByAddress(String address, PropertyAssessments customPropertyAssessments) {
+        PropertyAssessments assessments = (customPropertyAssessments != null) ? customPropertyAssessments : propertyAssessments;
 
-    public PropertyAssessment handleAccountNumber(String accountNumberInput) {
-        try {
-            int accountNumber = Integer.parseInt(accountNumberInput);
-            return propertyAssessments.getPropertyByAccountNum(accountNumber);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid input...\nPlease provide a valid integer account number.");
-            return null;
-        }
+        List<PropertyAssessment> filteredList = assessments.getPropertyAssessmentList()
+                .stream()
+                .filter(propertyAssessment ->
+                        findAddress(propertyAssessment, address))
+                .toList();
+
+        return new PropertyAssessments(new ArrayList<>(filteredList));
     }
 
-//    private void dataNotFound(PropertyAssessments list){
-//        // this method will handle errors if there is no data in the PropertyAssessments list
-//        if (list.size() == 0){
-//            System.err.println("Data not found!");
-//        }
-//    }
-
-//    private void getStat(PropertyAssessments list) {
-//        // this method will return stats on a certain list as long as the list has data
-//        if (list.size() > 0) {
-//            Statistics statistics = new Statistics(list);
-//            System.out.println(statistics);
-//        }dataNotFound(list);
-//    }
-
-//    public void getAllStat() {
-//        // this method will return all stats as long as the list has data
-//        System.out.println("\nDescriptive statistics of all assessments");
-//        if (propertyAssessments.size() > 0) {
-//            Statistics statistics = new Statistics(propertyAssessments);
-//            System.out.println(statistics);
-//        }dataNotFound(propertyAssessments);
-//    }
-
-    public ArrayList<PropertyAssessment> getAllList(){
+    /**
+     * Get a list of all PropertyAssessments.
+     *
+     * @return an ArrayList of PropertyAssessment objects
+     */
+    public ArrayList<PropertyAssessment> getAllList() {
         return propertyAssessments.getPropertyAssessmentList();
     }
 }

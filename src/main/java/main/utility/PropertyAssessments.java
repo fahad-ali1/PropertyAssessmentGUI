@@ -6,10 +6,11 @@ import java.util.HashMap;
 /**
  * The PropertyAssessments class manages a list of PropertyAssessment objects and provides methods
  * for adding, accessing, and manipulating the property assessment data.
+ * <p>
+ * Author: Fahad Ali
  */
 public class PropertyAssessments {
     private final ArrayList<PropertyAssessment> propertyAssessmentList;
-    private final String propertyAssessmentAPI;
     private final HashMap<Integer, PropertyAssessment> propertyByAccountNum = new HashMap<>();
 
     /**
@@ -22,7 +23,6 @@ public class PropertyAssessments {
      */
     public PropertyAssessments(ArrayList<PropertyAssessment> propertyAssessmentList) {
         this.propertyAssessmentList = propertyAssessmentList;
-        this.propertyAssessmentAPI = null;
     }
 
 
@@ -32,7 +32,6 @@ public class PropertyAssessments {
      */
     public PropertyAssessments() {
         this.propertyAssessmentList = new ArrayList<>();
-        this.propertyAssessmentAPI = "https://data.edmonton.ca/resource/q7d6-ambg.json";
     }
 
     /**
