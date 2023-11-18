@@ -6,8 +6,8 @@
 <?import javafx.scene.control.Button?>
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.application.main.PropertyAssessmentApplication">
-  <padding>
-    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
-  </padding>
+    <padding>
+        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
+    </padding>
 
 </VBox>
