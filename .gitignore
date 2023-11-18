@@ -36,3 +36,15 @@ build/
 
 ### Mac OS ###
 .DS_Store
+Thumbs.db
+
+# IntelliJ IDEA files
+.idea/
+
+# Compiled bytecode
+*.class
+
+# Build output
+/out/
+/target/
+/build/
