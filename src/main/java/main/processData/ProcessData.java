@@ -302,7 +302,7 @@ public class ProcessData {
                 .stream()
                 .filter(propertyAssessment ->
                         findAddress(propertyAssessment, address))
-                .toList();
+                .collect(Collectors.toList());
 
         return new PropertyAssessments(new ArrayList<>(filteredList));
     }
