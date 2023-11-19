@@ -3,6 +3,7 @@ package main.utility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 /**
  * The PropertyAssessments class manages a list of PropertyAssessment objects and provides methods
  * for adding, accessing, and manipulating the property assessment data.

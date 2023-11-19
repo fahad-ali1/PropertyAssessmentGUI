@@ -24,6 +24,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
     private final ProcessData processData = new ProcessData();
     private final PropertyAssessments propertyAssessments = new PropertyAssessments();
+
     /**
      * Constructs an ApiPropertyAssessmentDAO.
      */
@@ -191,7 +192,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
                     .append("%25%27");
         }
 
-        if (assessmentClass != null){
+        if (assessmentClass != null) {
             finalQuery.append("%20AND%20(mill_class_1%20LIKE%20%27")
                     .append(assessmentClass.toUpperCase())
                     .append("%27%20OR%20mill_class_2%20LIKE%20%27")
@@ -224,6 +225,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
     //https://data.edmonton.ca/resource/q7d6-ambg.json?$where=account_number='' OR neighbourhood='OLIVER' AND (mill_class_1='COMMERCIAL' OR mill_class_2='COMMERCIAL' OR mill_class_3='COMMERCIAL') AND (suite LIKE '104' OR street_name LIKE '104' OR house_number LIKE '104') AND (assessed_value > '0' AND assessed_value < '30000000')
     //https://data.edmonton.ca/resource/q7d6-ambg.json?$where=account_number=%27%27%20OR%20neighbourhood=%27OLIVER%27%20AND%20(mill_class_1=%27COMMERCIAL%27%20OR%20mill_class_2=%27COMMERCIAL%27%20OR%20mill_class_3=%27COMMERCIAL%27)%20AND%20(suite%20LIKE%20%27104%27%20OR%20street_name%20LIKE%20%27104%27%20OR%20house_number%20LIKE%20%27104%27)%20AND%20(assessed_value%20%3E%20%270%27%20AND%20assessed_value%20%3C%20%2730000000%27)
+
     /**
      * Retrieves a list of all PropertyAssessments from the API (1000 calls).
      *

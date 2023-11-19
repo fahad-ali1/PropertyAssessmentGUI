@@ -39,6 +39,7 @@ import java.util.Objects;
  * <p>
  * - Search function with single or advance filters.
  * <p>
+ *
  * @author Fahad Ali
  */
 public class PropertyAssessmentApplication extends Application {
@@ -48,15 +49,6 @@ public class PropertyAssessmentApplication extends Application {
     private final Label daoSelected = new Label("Select Data Source: ");
     private final Label dataInBackground = new Label("Entries Cached: 0");
     private final Label timeElapsedLabel = new Label("Time to Load: 0 milliseconds");
-
-    /**
-     * The main for the application
-     *
-     * @param args Command-line argument for the application.
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
 
     /**
      * Initialize and start up the application.
@@ -82,7 +74,7 @@ public class PropertyAssessmentApplication extends Application {
      * Configures the stage with the following width and height.
      *
      * @param primaryStage The primary stage of the JavaFX application.
-     * @param scene         The scene to set for the primary stage.
+     * @param scene        The scene to set for the primary stage.
      */
     private void setStage(Stage primaryStage, Scene scene) {
         primaryStage.setMinHeight(500);
@@ -97,8 +89,8 @@ public class PropertyAssessmentApplication extends Application {
      *
      * @return The line.
      */
-    private Line createHorizontalLine(){
-        return new Line(0,0,235, 0);
+    private Line createHorizontalLine() {
+        return new Line(0, 0, 235, 0);
     }
 
     /**
@@ -221,7 +213,7 @@ public class PropertyAssessmentApplication extends Application {
         gridPane.add(createHorizontalLine(), 0, 15, 2, 1);
         gridPane.add(countLabel, 0, 16, 2, 1);
         gridPane.add(dataInBackground, 0, 17, 2, 1);
-        gridPane.add(timeElapsedLabel, 0, 18, 2,1);
+        gridPane.add(timeElapsedLabel, 0, 18, 2, 1);
     }
 
     /**
@@ -235,6 +227,7 @@ public class PropertyAssessmentApplication extends Application {
         choiceBox.getItems().addAll("", "Residential", "Commercial", "Farmland", "Other Residential");
         return choiceBox;
     }
+
     /**
      * Creates choice box for selecting by data soure.
      *
@@ -252,7 +245,6 @@ public class PropertyAssessmentApplication extends Application {
 
     /**
      * Helper function to set the dao object to selected data source.
-     *
      */
     private void dataSourceDAO(String dataSourceChoice) {
         if ("CSV File".equals(dataSourceChoice)) {
@@ -264,7 +256,6 @@ public class PropertyAssessmentApplication extends Application {
 
     /**
      * Load data into the TableView.
-     *
      */
     private void loadData(ChoiceBox<String> choiceBox) {
         long startTime = System.currentTimeMillis();
@@ -307,7 +298,7 @@ public class PropertyAssessmentApplication extends Application {
      *
      * @return The Button for resetting data.
      */
-    private Button resetButton(){
+    private Button resetButton() {
         Button resetButton = new Button("Reset");
         resetButton.setPrefWidth(115);
 
@@ -334,8 +325,8 @@ public class PropertyAssessmentApplication extends Application {
      * @return The Button for searching data.
      */
     private Button searchButton(TextField accountInput, TextField addressInput,
-                                    TextField neighborhoodInput, ChoiceBox<String> assessmentFilter,
-                                    TextField min, TextField max) {
+                                TextField neighborhoodInput, ChoiceBox<String> assessmentFilter,
+                                TextField min, TextField max) {
         Button searchButton = new Button("Search");
         searchButton.setPrefWidth(115);
 
@@ -351,9 +342,9 @@ public class PropertyAssessmentApplication extends Application {
             // Contains current selected filters
             List<String> selectedFilters = selectedFilter(accountNum, address, neighborhood, assessmentClass, minValue,
                     maxValue);
-            if (dao == null){
+            if (dao == null) {
                 noDataSourceSelected();
-            } else{
+            } else {
                 if (!selectedFilters.isEmpty()) {
                     tableView.getItems().clear();
                     if (selectedFilters.size() == 1 && !(selectedFilters.contains("Min") || selectedFilters.contains("Max"))) {
@@ -383,12 +374,12 @@ public class PropertyAssessmentApplication extends Application {
     /**
      * Shows what filters have been selected.
      *
-     * @param accountNum        The account number to search.
-     * @param address           The address to search.
-     * @param neighborhood      The neighborhood to search,
-     * @param assessmentClass   The assessment filter to search.
-     * @param min               The minimum assessment filter.
-     * @param max               The maximum assessment filter.
+     * @param accountNum      The account number to search.
+     * @param address         The address to search.
+     * @param neighborhood    The neighborhood to search,
+     * @param assessmentClass The assessment filter to search.
+     * @param min             The minimum assessment filter.
+     * @param max             The maximum assessment filter.
      * @return The selected filters.
      */
     private List<String> selectedFilter(String accountNum, String address,
@@ -419,20 +410,20 @@ public class PropertyAssessmentApplication extends Application {
     /**
      * Filters data specifically for single filters.
      *
-     * @param selectedFilters   Show the filter selected
-     * @param accountNum        The account number to search.
-     * @param address           The address to search.
-     * @param neighborhood      The neighborhood to search,
-     * @param assessmentClass   The assessment filter to search.
+     * @param selectedFilters Show the filter selected
+     * @param accountNum      The account number to search.
+     * @param address         The address to search.
+     * @param neighborhood    The neighborhood to search,
+     * @param assessmentClass The assessment filter to search.
      */
     private void singleFilter(List<String> selectedFilters,
                               String accountNum, String address,
                               String neighborhood, String assessmentClass) {
 
         List<PropertyAssessment> results = new ArrayList<>();
-        if (dao == null){
+        if (dao == null) {
             noDataSourceSelected();
-        }else{
+        } else {
             if (selectedFilters.contains("Account Number")) {
                 PropertyAssessment result = dao.getByAccountNumber(accountNum);
                 if (result != null) {
@@ -457,7 +448,7 @@ public class PropertyAssessmentApplication extends Application {
      *
      * @param results The list of PropertyAssessments.
      */
-    private void displayResults(List<PropertyAssessment> results){
+    private void displayResults(List<PropertyAssessment> results) {
         if (results.isEmpty()) {
             resultNotFound();
         } else {
@@ -623,7 +614,6 @@ public class PropertyAssessmentApplication extends Application {
 
     /**
      * Shows alert for no result found.
-     *
      */
     private void resultNotFound() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -635,7 +625,6 @@ public class PropertyAssessmentApplication extends Application {
 
     /**
      * Shows alert for no data source selected.
-     *
      */
     private void noDataSourceSelected() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -647,7 +636,6 @@ public class PropertyAssessmentApplication extends Application {
 
     /**
      * Shows alert for no filters selected.
-     *
      */
     private void noFiltersSelected() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -675,8 +663,8 @@ public class PropertyAssessmentApplication extends Application {
      *
      * @param choiceBox The ChoiceBox for the data source.
      */
-    private void updateSelectedDAOLabel(ChoiceBox<String> choiceBox){
-        if (Objects.equals(choiceBox.getValue(), "Edmonton's Online Property Data (API)")){
+    private void updateSelectedDAOLabel(ChoiceBox<String> choiceBox) {
+        if (Objects.equals(choiceBox.getValue(), "Edmonton's Online Property Data (API)")) {
             daoSelected.setText("Selected Data Source -> API");
         } else if (Objects.equals(choiceBox.getValue(), "CSV File")) {
             daoSelected.setText("Selected Data Source -> CSV");
@@ -685,7 +673,6 @@ public class PropertyAssessmentApplication extends Application {
 
     /**
      * Updates label for amount of entries displayed and/or cached.
-     *
      */
     private void updateEntryCount() {
         countLabel.setText("Entries Displayed: " + tableView.getItems().size() + " properties");
@@ -696,9 +683,8 @@ public class PropertyAssessmentApplication extends Application {
 
     /**
      * Updates label for total time taken to load.
-     *
      */
-    private void timeElapsed(long startTime){
+    private void timeElapsed(long startTime) {
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
         timeElapsedLabel.setText("Time to Load: " + elapsedTime + " milliseconds");
