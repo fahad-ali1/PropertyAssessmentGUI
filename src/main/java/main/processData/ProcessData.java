@@ -190,10 +190,13 @@ public class ProcessData {
      * @return true if the address matches or if the provided address is null. Else, false
      */
     private boolean findAddress(PropertyAssessment property, String address) {
+        String concatenatedAddress = (((property.getBuildingInfo().getHouseNum() + " " +
+                property.getBuildingInfo().getSuite()).toUpperCase() + " " +
+                property.getBuildingInfo().getStreetName()).toUpperCase().replace(" ", ""));
+
         return address == null ||
-                property.getBuildingInfo().getStreetName().toLowerCase().contains(address.toLowerCase()) ||
-                String.valueOf(property.getBuildingInfo().getHouseNum()).contains(address.toLowerCase()) ||
-                String.valueOf(property.getBuildingInfo().getSuite()).contains(address.toLowerCase());
+                concatenatedAddress.contains(address.toUpperCase().replace(" ", ""))
+                ;
     }
 
     /**
