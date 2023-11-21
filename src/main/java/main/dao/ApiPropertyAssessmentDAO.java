@@ -101,9 +101,10 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
      */
     @Override
     public PropertyAssessment getByAccountNumber(String accountNumber) {
-        String accountNumQuery = apiUrl + "?$where=account_number=%27" + accountNumber + "%27";
+        String accountNumberInput = accountNumber.trim();
+        String accountNumQuery = apiUrl + "?$where=account_number=%27" + accountNumberInput + "%27";
         getQuery(accountNumQuery);
-        return propertyAssessments.getPropertyByAccountNum(Integer.parseInt(accountNumber));
+        return propertyAssessments.getPropertyByAccountNum(Integer.parseInt(accountNumberInput));
     }
 
     /**
@@ -114,7 +115,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
      * @return The PropertyAssessment with the specified address.
      */
     public PropertyAssessments getByAddress(String input) {
-        String address = input.replace(" ", "%20");
+        String address = input.toUpperCase().trim().replace(" ", "%20");
         String addressQuery = apiUrl +
                 "?$where=suite%20LIKE%20%27" +
                 address.toUpperCase() +
@@ -124,7 +125,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
                 address.toUpperCase() +
                 "%25%27";
         getQuery(addressQuery);
-        return processData.filterByAddress(input, propertyAssessments);
+        return processData.filterByAddress(address.replace("%20", " "), propertyAssessments);
     }
 
     /**
@@ -135,9 +136,10 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
      */
     @Override
     public PropertyAssessments getByNeighbourhood(String neighbourhood) {
-        String neighbourhoodQuery = apiUrl + "?$where=neighbourhood%20LIKE%20%27" + neighbourhood.toUpperCase() + "%25%27";
+        String neighborhoodInput = neighbourhood.trim().replace(" ","").toUpperCase();
+        String neighbourhoodQuery = apiUrl + "?$where=neighbourhood%20LIKE%20%27" + neighborhoodInput + "%25%27";
         getQuery(neighbourhoodQuery);
-        return processData.filterByNeighborhood(neighbourhood, propertyAssessments);
+        return processData.filterByNeighborhood(neighborhoodInput, propertyAssessments);
     }
 
     /**
@@ -174,19 +176,19 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     public PropertyAssessments multipleFilter(String accountNumber, String neighbourhood, String assessmentClass,
                                               String address, String min, String max) {
-        int minValue = Integer.parseInt(min);
-        int maxValue = Integer.parseInt(max);
+        int minValue = Integer.parseInt(min.trim());
+        int maxValue = Integer.parseInt(max.trim());
 
         StringBuilder finalQuery = new StringBuilder(apiUrl + "?$where=");
 
         if (accountNumber != null) {
             finalQuery.append("account_number=%27")
-                    .append(accountNumber)
+                    .append(accountNumber.trim())
                     .append("%27");
         }
 
         if (neighbourhood != null) {
-            String neighbourhoodInput = neighbourhood.toUpperCase();
+            String neighbourhoodInput = neighbourhood.trim().toUpperCase();
             finalQuery.append("%20OR%20neighbourhood%20LIKE%20%27%25")
                     .append(neighbourhoodInput)
                     .append("%25%27");
@@ -203,7 +205,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
         }
 
         if (address != null) {
-            String addressInput = address.replace(" ", "%20");
+            String addressInput = address.trim().replace(" ", "%20");
             finalQuery.append("%20AND%20(suite%20LIKE%20%27%25")
                     .append(addressInput.toUpperCase())
                     .append("%25%27%20OR%20street_name%20LIKE%20%27%25")
@@ -219,6 +221,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
                     .append(maxValue).append("%27)");
         }
         getQuery(String.valueOf(finalQuery));
+
         return processData.filters(accountNumber, neighbourhood, assessmentClass, address,
                 minValue, maxValue, propertyAssessments);
     }
