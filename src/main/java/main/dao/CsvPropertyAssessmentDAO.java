@@ -33,7 +33,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
      */
     @Override
     public PropertyAssessment getByAccountNumber(String accountNumber) {
-        return file.handleAccountNumber(accountNumber);
+        return file.handleAccountNumber(accountNumber.trim());
     }
 
     /**
@@ -47,7 +47,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     public PropertyAssessments getByAddress(String address) {
         // set second parameter to null so that it uses the properties
         // that are already populated with the CSV inside this DAO
-        return file.filterByAddress(address, null);
+        return file.filterByAddress(address.trim(), null);
     }
 
     /**
@@ -58,7 +58,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
      */
     @Override
     public PropertyAssessments getByNeighbourhood(String neighbourhood) {
-        return file.filterByNeighborhood(neighbourhood, null);
+        return file.filterByNeighborhood(neighbourhood.trim(), null);
     }
 
     /**
@@ -69,7 +69,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
      */
     @Override
     public PropertyAssessments getByAssessmentClass(String assessmentClass) {
-        return file.filterByAssessment(assessmentClass, null);
+        return file.filterByAssessment(assessmentClass.trim(), null);
     }
 
     /**
@@ -86,8 +86,8 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     public PropertyAssessments multipleFilter(String accountNum, String neighbourhood, String assessmentClass,
                                               String address, String min, String max) {
-        int minValue = Integer.parseInt(min);
-        int maxValue = Integer.parseInt(max);
+        int minValue = Integer.parseInt(min.trim());
+        int maxValue = Integer.parseInt(max.trim());
 
         return file.filters(accountNum, neighbourhood, assessmentClass, address,
                 minValue, maxValue, null);
