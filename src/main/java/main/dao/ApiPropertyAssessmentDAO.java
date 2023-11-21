@@ -116,6 +116,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
      */
     public PropertyAssessments getByAddress(String input) {
         String address = input.toUpperCase().trim().replace(" ", "%20");
+
         String addressQuery = apiUrl +
                 "?$where=suite%20LIKE%20%27" +
                 address.toUpperCase() +
@@ -188,19 +189,20 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO {
         }
 
         if (neighbourhood != null) {
-            String neighbourhoodInput = neighbourhood.trim().toUpperCase();
+            String neighbourhoodInput = neighbourhood.trim().toUpperCase().replace(" ", "%20");
             finalQuery.append("%20OR%20neighbourhood%20LIKE%20%27%25")
                     .append(neighbourhoodInput)
                     .append("%25%27");
         }
 
         if (assessmentClass != null) {
+            String assessmentClassInput = assessmentClass.replace(" ", "%20");
             finalQuery.append("%20AND%20(mill_class_1%20LIKE%20%27")
-                    .append(assessmentClass.toUpperCase())
+                    .append(assessmentClassInput.toUpperCase())
                     .append("%27%20OR%20mill_class_2%20LIKE%20%27")
-                    .append(assessmentClass.toUpperCase())
+                    .append(assessmentClassInput.toUpperCase())
                     .append("%27%20OR%20mill_class_3%20LIKE%20%27")
-                    .append(assessmentClass.toUpperCase())
+                    .append(assessmentClassInput.toUpperCase())
                     .append("%27)");
         }
 
