@@ -224,7 +224,7 @@ public class PropertyAssessmentApplication extends Application {
     private ChoiceBox<String> createAssessmentSortChoiceBox() {
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
         choiceBox.setPrefWidth(260);
-        choiceBox.getItems().addAll("", "Residential", "Commercial", "Farmland", "Other Residential");
+        choiceBox.getItems().addAll("", "Residential", "Commercial", "Farmland", "Other Residential", "NONRES MUNICIPAL/RES EDUCATION");
         return choiceBox;
     }
 
