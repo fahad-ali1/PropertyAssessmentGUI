@@ -192,7 +192,7 @@ public class ProcessData {
     private boolean findAddress(PropertyAssessment property, String address) {
         String concatenatedAddress = (((property.getBuildingInfo().getHouseNum() + " " +
                 property.getBuildingInfo().getSuite()).toUpperCase() + " " +
-                property.getBuildingInfo().getStreetName()).toUpperCase().replace(" ", ""));
+                property.getBuildingInfo().getStreetName()).toUpperCase().trim().replace(" ", ""));
 
         return address == null ||
                 concatenatedAddress.contains(address.toUpperCase().replace(" ", ""))
